@@ -3,9 +3,12 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import "@toast-ui/calendar/dist/toastui-calendar.min.css";
+import "tui-date-picker/dist/tui-date-picker.css";
+import "tui-time-picker/dist/tui-time-picker.css";
 import { addHours } from "@/utils/date";
 import styled from "styled-components";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { LkSelect } from "./atoms/LkSelect";
 
 //  Calendar Dynamic Import (SSR 제외) : tui-calendar가 ssr 지원 X
 const _Calendar = dynamic(() => import("@toast-ui/react-calendar"), {
@@ -115,7 +118,7 @@ export default function Calendar({ view = "month" }: { view: ViewType }) {
 	return (
 		<article>
 			<Title text="🍞📅 TOAST UI Calendar + Next.js + TypeScript"></Title>
-			<CalendarHeader>
+			<CalendarNav>
 				<Button className="bg-pink">Today</Button>
 				<Button className="bg-red">
 					<ChevronLeftIcon className="w-6 h-6" />
@@ -124,7 +127,12 @@ export default function Calendar({ view = "month" }: { view: ViewType }) {
 					<ChevronRightIcon className="w-6 h-6" />
 				</Button>
 				<RenderDateSpan>{renderDate}</RenderDateSpan>
-			</CalendarHeader>
+				<LkSelect>
+					<LkSelect.Option>월간.</LkSelect.Option>
+					<LkSelect.Option>주간.</LkSelect.Option>
+					<LkSelect.Option>일간.</LkSelect.Option>
+				</LkSelect>
+			</CalendarNav>
 			<div id="calendar">
 				{/* 캘린더 렌더링 */}
 				{isRendered && (
@@ -136,7 +144,9 @@ export default function Calendar({ view = "month" }: { view: ViewType }) {
 							dayNames: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
 						}}
 						events={initialEvents}
-						useCreationPopup={true}
+						//  일정 생성 팝업 사용 여부
+						useFormPopup={true}
+						// 일정 상세 팝업 사용 여부
 						useDetailPopup={true}
 						onClickEvent={onClickEvent}
 					/>
@@ -150,8 +160,8 @@ const Title = ({ text }: { text: string }) => {
 	return <h1 className="text-center">{text}</h1>;
 };
 
-const CalendarHeader = ({ children }: { children: any }) => {
-	return <div className="flex gap-4 mb-6">{children}</div>;
+const CalendarNav = ({ children }: { children: any }) => {
+	return <nav className="flex gap-4 mb-6">{children}</nav>;
 };
 
 const Button = ({ children, className }: { children: any; className: string }) => {
